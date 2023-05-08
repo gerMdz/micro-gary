@@ -1,12 +1,23 @@
 # micro-gary
+
 Curso micro
 
 Agregando microservices
 
-#### Actual 
+### Command
 
-Cap 2
+
+```bash
+composer require symfony/profiler-pack
+composer require annotation
+php bin/console debug:route
+
+```
+
+#### Actual
+
+Cap 3
 
 #### Next
 
-[CaP 3](https://www.youtube.com/watch?v=Mxy5GAR5tEE&list=PLQH1-k79HB3_lsClhpW1svbukj6zgcupR&index=4)
+[Cap 4](https://www.youtube.com/watch?v=7ElTwOcwJf4&list=PLQH1-k79HB3_lsClhpW1svbukj6zgcupR&index=5)
