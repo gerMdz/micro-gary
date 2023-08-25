@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\DTO\LowestPriceEnquiry;
+use App\Service\Serializer\DTOSerializer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +23,7 @@ class ProductsController extends AbstractController
     }
 
     #[Route('/products/{id}/menor-precio', name: 'app_products_menor-precio', methods: 'POST')]
-    public function menorPrecio(Request $request, int $id, SerializerInterface $serializer): JsonResponse
+    public function menorPrecio(Request $request, int $id, DTOSerializer $serializer): Response
     {
 
         if($request->headers->has('force_fail')){
@@ -30,19 +31,20 @@ class ProductsController extends AbstractController
                 'error' => 'Menor precio. Mensaje de fallo'
             ], $request->headers->get('force_fail'));
         }
+
+        /** @var LowestPriceEnquiry $menorPrecioConsulta */
         $menorPrecioConsulta = $serializer->deserialize($request->getContent(), LowestPriceEnquiry::class, 'json');
 
-        return new JsonResponse([
-            "quantity" => 4,
-            "request_location" => "AR",
-            "voucher_code" => "OU812",
-            "request_date" => "2023-05-08",
-            "product_id" => $id,
-            'price' => 100,
-            'descuento_price' => 50,
-            'promo_id' => 3,
-            'promo_name' => 'Lunes free'
-        ], 200);
+        $menorPrecioConsulta->setDescuentoPrice(50);
+        $menorPrecioConsulta->setPrice(100);
+        $menorPrecioConsulta->setPromoId(3);
+        $menorPrecioConsulta->setPromoName('Lunes free');
+
+        $responseContent = $serializer->serialize($menorPrecioConsulta, 'json');
+
+        return new Response($responseContent, 200);
+
+
     }
 
 
