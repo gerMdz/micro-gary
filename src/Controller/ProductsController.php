@@ -3,13 +3,13 @@
 namespace App\Controller;
 
 use App\DTO\LowestPriceEnquiry;
+use App\Filter\PromocionFilterInterface;
 use App\Service\Serializer\DTOSerializer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class ProductsController extends AbstractController
 {
@@ -23,10 +23,10 @@ class ProductsController extends AbstractController
     }
 
     #[Route('/products/{id}/menor-precio', name: 'app_products_menor-precio', methods: 'POST')]
-    public function menorPrecio(Request $request, int $id, DTOSerializer $serializer): Response
+    public function menorPrecio(Request $request, int $id, DTOSerializer $serializer, PromocionFilterInterface $promocionFilter): Response
     {
 
-        if($request->headers->has('force_fail')){
+        if ($request->headers->has('force_fail')) {
             return new JsonResponse([
                 'error' => 'Menor precio. Mensaje de fallo'
             ], $request->headers->get('force_fail'));
@@ -35,12 +35,10 @@ class ProductsController extends AbstractController
         /** @var LowestPriceEnquiry $menorPrecioConsulta */
         $menorPrecioConsulta = $serializer->deserialize($request->getContent(), LowestPriceEnquiry::class, 'json');
 
-        $menorPrecioConsulta->setDescuentoPrice(50);
-        $menorPrecioConsulta->setPrice(100);
-        $menorPrecioConsulta->setPromoId(3);
-        $menorPrecioConsulta->setPromoName('Lunes free');
+        $modificaConsulta = $promocionFilter->aplicado($menorPrecioConsulta);
 
-        $responseContent = $serializer->serialize($menorPrecioConsulta, 'json');
+
+        $responseContent = $serializer->serialize($modificaConsulta, 'json');
 
         return new Response($responseContent, 200);
 
