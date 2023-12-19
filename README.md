@@ -20,4 +20,4 @@ Cap 3
 
 #### Next
 
-[Cap 6](https://www.youtube.com/watch?v=7ElTwOcwJf4&list=PLQH1-k79HB3_lsClhpW1svbukj6zgcupR&index=7)
+[Parte 8](https://www.youtube.com/watch?v=lWbq2Y0piF4&list=PLQH1-k79HB3_lsClhpW1svbukj6zgcupR&index=9)
