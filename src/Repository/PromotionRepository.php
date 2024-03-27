@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Producto;
 use App\Entity\Promotion;
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,4 +47,16 @@ class PromotionRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findValidForProducto(Producto $producto, DateTimeInterface $date)
+    {
+      return $this->createQueryBuilder('p')
+          ->innerJoin('p.productoPromotions', 'pp')
+          ->andWhere('pp.producto = :producto')
+          ->andWhere('pp.validoTo > :date OR pp.validoTo IS NULL')
+          ->setParameter('producto', $producto)
+          ->setParameter('date', $date)
+          ->getQuery()
+          ->getResult()
+          ;
+    }
 }

@@ -13,13 +13,13 @@ class ProductoPromotion
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int|null $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'productoPromotions')]
     #[ORM\JoinColumn(nullable: false)]
     private Producto|null $producto = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'productoPromotions')]
     #[ORM\JoinColumn(nullable: false)]
     private Promotion|null $promotion = null;
 
@@ -43,12 +43,12 @@ class ProductoPromotion
         return $this;
     }
 
-    public function getPromotion(): ?Promotion
+    public function getPromotion(): Promotion|null
     {
         return $this->promotion;
     }
 
-    public function setPromotion(?Promotion $promotion): static
+    public function setPromotion(Promotion|null $promotion): static
     {
         $this->promotion = $promotion;
 
@@ -66,4 +66,6 @@ class ProductoPromotion
 
         return $this;
     }
+
+
 }

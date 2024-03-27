@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\DTO\LowestPriceEnquiry;
+use App\Entity\Promotion;
 use App\Filter\PromocionFilterInterface;
+use App\Repository\ProductoRepository;
 use App\Service\Serializer\DTOSerializer;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,6 +16,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProductsController extends AbstractController
 {
+
+    public function __construct(
+        private ProductoRepository $productoRepository,
+        private EntityManagerInterface $em
+    )
+    {
+    }
+
     #[Route('/products', name: 'app_products')]
     public function index(): JsonResponse
     {
@@ -35,7 +46,19 @@ class ProductsController extends AbstractController
         /** @var LowestPriceEnquiry $menorPrecioConsulta */
         $menorPrecioConsulta = $serializer->deserialize($request->getContent(), LowestPriceEnquiry::class, 'json');
 
-        $modificaConsulta = $promocionFilter->aplicado($menorPrecioConsulta);
+        $producto = $this->productoRepository->find($id);
+
+        $menorPrecioConsulta->setProducto($producto);
+
+        $promotions = $this->em->getRepository(Promotion::class)
+            ->findValidForProducto(
+                $producto,
+                date_create_immutable($menorPrecioConsulta->getRequestDate())
+            );
+
+        dd($promotions);
+
+        $modificaConsulta = $promocionFilter->aplicado($menorPrecioConsulta, $promotions);
 
 
         $responseContent = $serializer->serialize($modificaConsulta, 'json');

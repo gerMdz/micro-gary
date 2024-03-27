@@ -2,9 +2,11 @@
 
 namespace App\DTO;
 
+use App\Entity\Producto;
+
 class LowestPriceEnquiry implements PromotionEnquiryInterface
 {
-    private int|null $productId;
+    private Producto|null $producto;
     private int|null $quantity;
     private string|null $requestLocation;
    private string|null $voucherCode;
@@ -15,20 +17,24 @@ class LowestPriceEnquiry implements PromotionEnquiryInterface
    private string|null $promoName;
 
     /**
-     * @return int|null
+     * @return Producto|null
      */
-    public function getProductId(): int|null
+    public function getProducto(): Producto|null
     {
-        return $this->productId;
+        return $this->producto;
     }
 
     /**
-     * @param int|null $productId
+     * @param Producto|null $producto
+     * @return void
      */
-    public function setProductId(int|null $productId): void
+    public function setProducto(Producto|null $producto): void
     {
-        $this->productId = $productId;
+        $this->producto = $producto;
     }
+
+
+
 
     /**
      * @return int|null
